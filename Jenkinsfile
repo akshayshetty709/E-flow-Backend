@@ -9,6 +9,8 @@ pipeline {
     stages {
         stage('build & deploy') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'Dockerhubcred', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+    
                 sshagent(['ec2_key']){
                      sh """
                      ssh -o StrictHostKeyChecking=no ubuntu@${EC2}
@@ -19,9 +21,10 @@ pipeline {
                      docker rm ${CONTAINER_NAME} || true
                      docker rmi ${IMAGE_NAME} . || true
                      docker build -t ${IMAGE_NAME} .
-                     docker run -d -p 3000:3000 --name ${IMAGE_NAME} ${CONTAINER_NAME}
+                     docker run -d -p 3000:3000 --name ${CONTAINER_NAME} ${IMAGE_NAME}
                      """
                 }
+              }
             }
         }
     }
