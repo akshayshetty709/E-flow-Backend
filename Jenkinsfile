@@ -1,59 +1,27 @@
 pipeline {
     agent any
-
-    environment {
-        IMAGE_NAME = 'app-backend'
-        CONTAINER_NAME = 'backend-contain'
-        EC2_IP = '13.205.90.64'
+    environment{
+        EC2 = '3.109.132.134'
+        IMAGE_NAME = 'E-FLOW-BACKEND'
+        CONTAINER_NAME = 'E-FLOW'
     }
-
+ 
     stages {
-
-        stage('Checkout') {
+        stage('build & deploy') {
             steps {
-                git branch: 'main',
-                    credentialsId: 'git_creds',
-                    url: 'https://github.com/vijishvk/E-flow-Backend.git'
-            }
-        }
-
-        stage('Deploy to EC2') {
-            steps {
-                sshagent(['ec2_creds']) {
-                    sh """
-                          ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "
-                          rm -rf /home/ubuntu/backend
-                          mkdir -p /home/ubuntu/backend
-                          cd /home/ubuntu/backend
-                        
-
-                          if [ ! -d E-flow-Backend ]; then 
-                            git clone git@github.com:cloudhostingky-alt/E-flow-Backend.git
-                          fi 
-                          
-                           cd E-flow-Backend
-                           git checkout main
-                           git pull origin main
-                        
-                           
-                           docker stop ${CONTAINER_NAME} || true
-                           docker rm ${CONTAINER_NAME} || true
-                           docker rmi ${IMAGE_NAME} || true
-                           docker build -t ${IMAGE_NAME} .
-                           docker run -d -p 3000:3000 --name ${CONTAINER_NAME} ${IMAGE_NAME}
-                        "
-                    """
+                sshagent(['ec2_key']){
+                     sh """
+                     ssh -o StrictHostKeyChecking=no ubuntu@${EC2}
+                     git clone 
+                     cd  testapp
+                     docker stop ${CONTAINER_NAME} || true
+                     docker rm ${CONTAINER_NAME} || true
+                     docker rmi ${IMAGE_NAME} .
+                     docker build -t ${IMAGE_NAME} .
+                     docker run -d -p 3000:3000 --name ${IMAGE_NAME} ${CONTAINER_NAME}
+                     """
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo "Backend deployed successfully"
-        }
-        failure {
-            echo "Failed"
         }
     }
 }
