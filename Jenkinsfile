@@ -14,13 +14,13 @@ pipeline {
                 sshagent(['ec2_key']){
                      sh """
                      ssh -o StrictHostKeyChecking=no ubuntu@${EC2} " 
+                     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
                      rm -rf E-flow-Backend
                      git clone https://github.com/akshayshetty709/E-flow-Backend.git
                      cd  E-flow-Backend
                      docker stop ${CONTAINER_NAME} || true
                      docker rm ${CONTAINER_NAME} || true
                      docker rmi ${IMAGE_NAME} . || true
-                     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
                      docker build -t ${IMAGE_NAME} .
                      docker run -d -p 3000:3000 --name ${CONTAINER_NAME} ${IMAGE_NAME}
                      "
