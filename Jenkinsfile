@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment{
-        EC2 = '3.109.132.134'
+        EC2 = '13.127.144.84'
         IMAGE_NAME = 'e-flow-back'
         CONTAINER_NAME = 'e-flow'
     }
