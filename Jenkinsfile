@@ -12,8 +12,8 @@ pipeline {
                 sshagent(['ec2_key']){
                      sh """
                      ssh -o StrictHostKeyChecking=no ubuntu@${EC2}
-                     git clone 
-                     cd  testapp
+                     git clone https://github.com/akshayshetty709/E-flow-Backend.git
+                     cd  E-flow-Backend
                      docker stop ${CONTAINER_NAME} || true
                      docker rm ${CONTAINER_NAME} || true
                      docker rmi ${IMAGE_NAME} .
