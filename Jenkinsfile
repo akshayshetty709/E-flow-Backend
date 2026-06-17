@@ -17,7 +17,7 @@ pipeline {
                      cd  E-flow-Backend
                      docker stop ${CONTAINER_NAME} || true
                      docker rm ${CONTAINER_NAME} || true
-                     docker rmi ${IMAGE_NAME} .
+                     docker rmi ${IMAGE_NAME} . || true
                      docker build -t ${IMAGE_NAME} .
                      docker run -d -p 3000:3000 --name ${IMAGE_NAME} ${CONTAINER_NAME}
                      """
