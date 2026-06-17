@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment{
         EC2 = '3.109.132.134'
-        IMAGE_NAME = 'E-FLOW-BACKEND'
-        CONTAINER_NAME = 'E-FLOW'
+        IMAGE_NAME = 'e-flow-back'
+        CONTAINER_NAME = 'e-flow'
     }
  
     stages {
@@ -12,6 +12,7 @@ pipeline {
                 sshagent(['ec2_key']){
                      sh """
                      ssh -o StrictHostKeyChecking=no ubuntu@${EC2}
+                     rm -rf E-flow-Backend
                      git clone https://github.com/akshayshetty709/E-flow-Backend.git
                      cd  E-flow-Backend
                      docker stop ${CONTAINER_NAME} || true
